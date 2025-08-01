@@ -2,5 +2,5 @@ package br.com.fiap.msestoque.adapter.controller.request;
 
 public record BaixaEstoqueRequestDTO(
         String sku,
-        int quantidade
+        Integer quantidade
 ) {}
