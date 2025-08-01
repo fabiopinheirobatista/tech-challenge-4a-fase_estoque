@@ -86,5 +86,35 @@ class EstoqueApiControllerITTest {
                 .andExpect(jsonPath("$.sku").value(SKU_TESTE))
                 .andExpect(jsonPath("$.quantidade").value(QUANTIDADE_INICIAL));
     }
+    
+    @Test
+    @DisplayName("Deve retornar 404 ao tentar estornar com SKU nulo")
+    void estornoComSKUNula() throws Exception {
+        BaixaEstoqueRequestDTO request = new BaixaEstoqueRequestDTO(null, 0);
+
+        mockMvc.perform(put("/estoque/estorno")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().is4xxClientError());
+    }
+    
+    @Test
+    @DisplayName("Deve retornar 400 ao tentar estornar com quantidade nula")
+    void estornoComQuantidadeNula() throws Exception {
+        BaixaEstoqueRequestDTO request = new BaixaEstoqueRequestDTO(SKU_TESTE, null);
+
+        mockMvc.perform(put("/estoque/estorno")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+    
+    @Test
+    @DisplayName("Deve retornar 400 ao consultar estoque com SKU inexistente")
+    void consultarEstoqueInexistente() throws Exception {
+        mockMvc.perform(get("/estoque/consulta/{sku}", 100)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 
 }
